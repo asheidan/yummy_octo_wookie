@@ -1,6 +1,6 @@
 Redmine::Plugin.register :yummy_octo_wookie do
   name 'Yummy Octo Wookie plugin'
-  author 'Author name'
+  author 'Emil Eriksson'
   description 'This is a plugin for Redmine'
   version '0.0.1'
   url 'http://example.com/path/to/plugin'
