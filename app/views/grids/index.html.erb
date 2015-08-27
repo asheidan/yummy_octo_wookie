@@ -1,1 +1,47 @@
-<h2>GridsController#index</h2>
+<h2>Grid</h2>
+
+<%= form_tag({ :controller => 'grids', :action => 'index', :params => {:project_id => @project} }) do %>
+<fieldset class="collapsible">
+  <legend onclidk="toggleFieldset(this);">Options</legend>
+  <table style="width: 100%;">
+	<tr>
+	  <td>
+		<%= l(:label_horizontal_attribute) %>
+		<%= select_tag('horizontal', options_for_select(@attribute_options, @horizontal)) %>
+	  </td>
+	  <td>
+		<%= l(:label_vertical_attribute) %>
+		<%= select_tag('vertical', options_for_select(@attribute_options, @vertical)) %>
+	  </td>
+	  <td>
+		<%= l(:label_sorting_attribute) %>
+		<%= select_tag('sorting', options_for_select(@attribute_options, @sorting)) %>
+	  </td>
+	  <td>
+		<%= submit_tag 'Apply' %>
+	  </td>
+	</tr>
+  </table>
+</fieldset>
+<% end %>
+
+<table style="width: 100%;">
+  <tr>
+	<th></th>
+	<% @x_categories.each do |x| %>
+	<th><%= x %></th>
+	<% end %>
+  </tr>
+  <% @y_categories.each do |y| %>
+  <tr>
+	<th><%= y %></th>
+	<% @x_categories.each do |x| %>
+	<td>
+	  <% @data[y][x].each do |issue| %>
+	  <p><%= issue.subject %></p>
+	  <% end %>
+	</td>
+	<% end %>
+  </tr>
+  <% end %>
+</table>

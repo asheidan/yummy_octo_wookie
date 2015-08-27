@@ -1,3 +1,7 @@
 # English strings go here for Rails i18n
 en:
   # my_label: "My label"
+  permission_view_grids: View Grids
+  label_horizontal_attribute: Horizontal Attribute
+  label_vertical_attribute: Vertical Attribute
+  label_sorting_attribute: Sorting Attribute
