@@ -118,5 +118,19 @@ $(function () {
 		$(document).contextmenu(contextMenuRightClick);
 		contextMenuObserving = true;
 	}
+
+	if ($.fn.sortable) {
+		console.log("Found sortable");
+		$('.area').sortable({
+			cursor: "move",
+			connectWith: ".area",
+			items: "> .card",
+			placeholder: "placeholder",
+			forcePlaceHolderSize: true,
+			receive: function (event, ui) {
+				console.log(event.target);
+			},
+		});
+	}
 });
 </script>
