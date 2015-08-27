@@ -74,12 +74,12 @@
   <tr>
 	<th><%= y %></th>
 	<% @x_categories.each do |x| %>
-	<td style="vertical-align: top;">
+	<td style="vertical-align: top;" class="area">
 	  <% @data[y][x].each do |issue| %>
-	  <p id="issue-<%= issue.id %>" class="hascontextmenu" style="border: 1px solid #ebeea2; margin: 1px; padding: 5px; background-color: #ffffd5;">
-		<%= check_box_tag("ids[]", issue.id, false, :id => nil) %>
+	  <div id="issue-<%= issue.id %>" class="hascontextmenu card" style="border: 1px solid #ebeea2; margin: 1px; padding: 5px; background-color: #ffffd5;">
+		<div style="display: none;"><%= check_box_tag("ids[]", issue.id, false, :id => nil) %></div>
 		<%= link_to issue, { :controller => 'issues', :action => 'show', :id => issue } %>
-	  </p>
+	  </div>
 	  <% end %>
 	</td>
 	<% end %>
