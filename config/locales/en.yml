@@ -2,6 +2,6 @@
 en:
   # my_label: "My label"
   permission_view_grids: View Grids
-  label_horizontal_attribute: Horizontal Attribute
-  label_vertical_attribute: Vertical Attribute
-  label_sorting_attribute: Sorting Attribute
+  label_grid_horizontal_grouping: Group issues horizontally by
+  label_grid_vertical_grouping: Group issues vertically by
+  label_grid_sorting: Sort within groupings by
