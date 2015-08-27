@@ -39,14 +39,29 @@ class GridsController < ApplicationController
     @sorting = params[:sorting]
 
     issue = Issue.new
-    if @horizontal.nil? or not (issue.has_attribute?(@horizontal) or issue.respond_to?(@horizontal))
+    valid_request = true
+    if not valid_param?(@horizontal)
+      flash[:error] = "Unknown attribute #{@horizontal.inspect}"
       @horizontal = "status"
+      valid_request = false
     end
-    if @vertical.nil? or not (issue.has_attribute?(@vertical) or issue.respond_to?(@vertical))
+    if not valid_param?(@vertical)
+      flash[:error] = "Unknown attribute #{@vertical.inspect}"
       @vertical = "fixed_version"
+      valid_request = false
     end
-    if @sorting.nil? or not (issue.has_attribute?(@sorting) or issue.respond_to?(@sorting))
+    if not valid_param?(@sorting)
+      flash[:error] = "Unknown attribute #{@sorting.inspect}"
       @sorting = "priority"
+      valid_request = false
+    end
+
+    if not valid_request
+      redirect_to :controller => "grids", :action => "index", :project_id => @project, :params => {
+                    :horizontal => @horizontal,
+                    :vertical => @vertical,
+                    :sorting => @sorting
+                  }
     end
 
 
@@ -82,6 +97,10 @@ class GridsController < ApplicationController
   end
 
   private
+
+  def valid_param?(parameter)
+    PROCS.has_key?(parameter) and Issue.attribute_method?(parameter)
+  end
 
   def find_project
     @project = Project.find(params[:project_id])
