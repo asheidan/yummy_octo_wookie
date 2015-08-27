@@ -15,5 +15,6 @@ module GridsHelper
       @context_menu_included = true
     end
     #javascript_tag "contextMenuInit('#{ url_for(url) }')"
+    ""
   end
 end
