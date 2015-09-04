@@ -1,8 +1,8 @@
 class GridsController < ApplicationController
   unloadable
 
-  # helper :queries
-  # include QueriesHelper
+  helper :queries
+  include QueriesHelper
 
   before_filter :find_project, :authorize
 
@@ -29,10 +29,12 @@ class GridsController < ApplicationController
   end
 
   def index
-    # retrieve_query
+    retrieve_query
 
     @attribute_options = ATTRIBUTES
-    @issues = @project.issues
+    # @issues = @project.issues
+
+    @issues = @query.issues()
 
     @horizontal = params[:horizontal]
     @vertical = params[:vertical]
