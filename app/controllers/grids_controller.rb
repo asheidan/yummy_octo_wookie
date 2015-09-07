@@ -22,8 +22,10 @@ class GridsController < ApplicationController
     "priority" => proc {|project| IssuePriority.all },
     "fixed_version" => proc {|project| project.versions },
     "status" => proc {|project| IssueStatus.all },
+    "area" => proc {|project|
+    }
   }
-  PROCS.default = proc do
+  PROCS.default = proc do |project|
     puts("missing")
     []
   end
@@ -31,8 +33,17 @@ class GridsController < ApplicationController
   def index
     retrieve_query
 
+    custom_fields = IssueCustomField.where("is_for_all = ?", true)
+    project_custom_fields = @project.issue_custom_fields.all
+
+    puts (custom_fields + project_custom_fields)
+
     @attribute_options = ATTRIBUTES
     # @issues = @project.issues
+
+    @attribute_options += (custom_fields + project_custom_fields).map do |field|
+      [field.name, field.name.downcase]
+    end
 
     @issues = @query.issues()
 
@@ -40,18 +51,28 @@ class GridsController < ApplicationController
     @vertical = params[:vertical]
     @sorting = params[:sorting]
 
-    issue = Issue.new
+    x_getter = proc {|i|}
+    y_getter = proc {|i|}
+
     valid_request = true
+
     if not valid_param?(@horizontal)
-      flash[:error] = "Unknown attribute #{@horizontal.inspect}"
-      @horizontal = "status"
-      valid_request = false
+      custom_field = IssueCustomField.find_by_name(@horizontal)
+      if custom_field then
+        x_getter = proc {|i| i.custom_field_value(custom_field) }
+      else
+        flash[:error] = "Unknown attribute #{@horizontal.inspect}"
+        @horizontal = "status"
+        valid_request = false
+      end
     end
+
     if not valid_param?(@vertical)
       flash[:error] = "Unknown attribute #{@vertical.inspect}"
       @vertical = "fixed_version"
       valid_request = false
     end
+
     if not valid_param?(@sorting)
       flash[:error] = "Unknown attribute #{@sorting.inspect}"
       @sorting = "priority"
@@ -67,6 +88,9 @@ class GridsController < ApplicationController
     end
 
 
+    @x_categories = PROCS[@horizontal].call(@project)
+    @y_categories = PROCS[@vertical].call(@project)
+
     @data = Hash.new
     @data.default_proc = proc do |hash, key|
       subhash = Hash.new
@@ -75,9 +99,6 @@ class GridsController < ApplicationController
       end
       hash[key] = subhash
     end
-
-    @x_categories = PROCS[@horizontal].call(@project)
-    @y_categories = PROCS[@vertical].call(@project)
 
     @issues.each do |issue|
       y = issue[@vertical]
