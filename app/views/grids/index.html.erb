@@ -74,7 +74,7 @@
   <tr>
 	<th><%= if y.nil? then "None" else y.name end %></th>
 	<% @x_categories.each do |x| %>
-	<td style="vertical-align: top;" class="area">
+	<td style="vertical-align: top;" class="area" id="area-<%= if x.nil? then "none" else x.id end %>-<%= if y.nil? then "none" else y.id end %>">
 	  <% @data[y][x].each do |issue| %>
 	  <div id="issue-<%= issue.id %>" class="hascontextmenu card" style="border: 1px solid #ebeea2; margin: 1px; padding: 5px; background-color: #ffffd5;">
 		<div style="display: none;"><%= check_box_tag("ids[]", issue.id, false, :id => nil) %></div>
@@ -129,6 +129,14 @@ $(function () {
 			forcePlaceHolderSize: true,
 			receive: function (event, ui) {
 				console.log(event.target);
+				var target_ids = event.target.id.split("-").slice(1, 3);
+				var status_id = target_ids[0];
+				var version_id = target_ids[1];
+				var issue_id = ui.item[0].id.split("-")[1];
+				$.ajax({
+					url: "<%= escape_javascript url_for(:controller => 'issues', :action => 'bulk_update') %>?ids%5B%5D=" + issue_id + "&issue%5Bstatus_id%5D=" + status_id + "&issue%5Bfixed_version_id%5D=" + version_id,
+					type: "POST",
+				});
 			},
 		});
 	}
