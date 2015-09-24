@@ -76,8 +76,8 @@ class GridsController < ApplicationController
       hash[key] = subhash
     end
 
-    @x_categories = PROCS[@horizontal].call(@project)
-    @y_categories = PROCS[@vertical].call(@project)
+    @x_categories = PROCS[@horizontal].call(@project) + [nil]
+    @y_categories = PROCS[@vertical].call(@project) + [nil]
 
     @issues.each do |issue|
       y = issue[@vertical]
@@ -85,9 +85,6 @@ class GridsController < ApplicationController
       #puts("#{@vertical.inspect} #{y.inspect}")
       if not @y_categories.include?(y)
         y = nil
-        if not @y_categories.include?(y)
-          @y_categories << y
-        end
       end
 
       x = issue[@horizontal]
@@ -95,9 +92,6 @@ class GridsController < ApplicationController
       #puts("#{@horizontal.inspect} #{x.inspect}")
       if not @x_categories.include?(x)
         x = nil
-        if not @x_categories.include?(x)
-          @x_categories << x
-        end
       end
 
       @data[y][x].push(issue)
