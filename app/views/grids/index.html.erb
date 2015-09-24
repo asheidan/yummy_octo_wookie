@@ -128,13 +128,15 @@ $(function () {
 			placeholder: "placeholder",
 			forcePlaceHolderSize: true,
 			receive: function (event, ui) {
+				var horizontal = "<%= @horizontal %>";
+				var vertical = "<%= @vertical %>";
 				console.log(event.target);
 				var target_ids = event.target.id.split("-").slice(1, 3);
-				var status_id = target_ids[0];
-				var version_id = target_ids[1];
+				var horizontal_id = target_ids[0];
+				var vertical_id = target_ids[1];
 				var issue_id = ui.item[0].id.split("-")[1];
 				$.ajax({
-					url: "<%= escape_javascript url_for(:controller => 'issues', :action => 'bulk_update') %>?ids%5B%5D=" + issue_id + "&issue%5Bstatus_id%5D=" + status_id + "&issue%5Bfixed_version_id%5D=" + version_id,
+					url: "<%= escape_javascript url_for(:controller => 'issues', :action => 'bulk_update') %>?ids%5B%5D=" + issue_id + "&issue%5B" + horizontal + "_id%5D=" + horizontal_id + "&issue%5B" + vertical + "_id%5D=" + vertical_id,
 					type: "POST",
 				});
 			},
