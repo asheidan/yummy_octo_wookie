@@ -63,7 +63,7 @@
 
 <%= form_tag({}) do %>
 <%= hidden_field_tag('back_url', url_for(params), :id => nil) %>
-<table style="width: 100%;" border="1">
+<table style="width: 100%; table-layout: fixed;" border="1">
   <tr>
 	<th></th>
 	<% @x_categories.each do |x| %>
