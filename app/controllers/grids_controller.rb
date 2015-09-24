@@ -85,7 +85,9 @@ class GridsController < ApplicationController
       #puts("#{@vertical.inspect} #{y.inspect}")
       if not @y_categories.include?(y)
         y = "Unknown"
-        @y_categories += ["Unknown"]
+        if not @y_categories.include?(y)
+          @y_categories << y
+        end
       end
 
       x = issue[@horizontal]
@@ -93,7 +95,9 @@ class GridsController < ApplicationController
       #puts("#{@horizontal.inspect} #{x.inspect}")
       if not @x_categories.include?(x)
         x = "Unknown"
-        @x_categories += ["Unknown"]
+        if not @x_categories.include?(x)
+          @x_categories << x
+        end
       end
 
       @data[y][x].push(issue)
