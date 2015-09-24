@@ -74,25 +74,18 @@ class GridsController < ApplicationController
       hash[key] = subhash
     end
 
-    @x_categories = PROCS[@horizontal].call(@project) + [nil]
-    @y_categories = PROCS[@vertical].call(@project) + [nil]
+    @x_categories = create_categories @horizontal
+    @y_categories = create_categories @vertical
 
     @issues.each do |issue|
       y = issue[@vertical]
       y = issue.send(@vertical) if y.nil?
       #puts("#{@vertical.inspect} #{y.inspect}")
-      if not @y_categories.include?(y)
-        y = nil
-      end
 
       x = issue[@horizontal]
       x = issue.send(@horizontal) if x.nil?
       #puts("#{@horizontal.inspect} #{x.inspect}")
-      if not @x_categories.include?(x)
-        x = nil
-      end
-
-      @data[y][x].push(issue)
+      @data[get_id y][get_id x].push(issue)
     end
   end
 
@@ -104,5 +97,24 @@ class GridsController < ApplicationController
 
   def find_project
     @project = Project.find(params[:project_id])
+  end
+
+  def create_categories parameter
+    categories = []
+    (PROCS[parameter].call(@project) + [nil]).each do |x|
+      categories << if x.nil? then{:id => :none, :name => "None"} else {:id => get_id(x), :name => x.name} end
+    end
+    categories
+  end
+
+  def get_id entity
+    case entity
+    when nil
+      :none
+    when Member
+      entity.user_id
+    else
+      entity.id
+    end
   end
 end

@@ -67,15 +67,15 @@
   <tr>
 	<th></th>
 	<% @x_categories.each do |x| %>
-	<th><%= if x.nil? then "None" else x.name end %></th>
+	<th><%= x[:name] %></th>
 	<% end %>
   </tr>
   <% @y_categories.each do |y| %>
   <tr>
-	<th><%= if y.nil? then "None" else y.name end %></th>
+	<th><%= y[:name] %></th>
 	<% @x_categories.each do |x| %>
-	<td style="vertical-align: top;" class="area" id="area-<%= if x.nil? then "none" else x.id end %>-<%= if y.nil? then "none" else y.id end %>">
-	  <% @data[y][x].each do |issue| %>
+	<td style="vertical-align: top;" class="area" id="area-<%= x[:id] %>-<%= y[:id] %>">
+	  <% @data[y[:id]][x[:id]].each do |issue| %>
 	  <div id="issue-<%= issue.id %>" class="hascontextmenu card" style="border: 1px solid #ebeea2; margin: 1px; padding: 5px; background-color: #ffffd5;">
 		<div style="display: none;"><%= check_box_tag("ids[]", issue.id, false, :id => nil) %></div>
 		<%= link_to issue, { :controller => 'issues', :action => 'show', :id => issue } %>
