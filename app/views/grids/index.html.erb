@@ -67,12 +67,12 @@
   <tr>
 	<th></th>
 	<% @x_categories.each do |x| %>
-	<th><%= x %></th>
+	<th><%= if x.nil? then "None" else x.name end %></th>
 	<% end %>
   </tr>
   <% @y_categories.each do |y| %>
   <tr>
-	<th><%= y %></th>
+	<th><%= if y.nil? then "None" else y.name end %></th>
 	<% @x_categories.each do |x| %>
 	<td style="vertical-align: top;" class="area">
 	  <% @data[y][x].each do |issue| %>
