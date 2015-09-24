@@ -8,7 +8,6 @@ class GridsController < ApplicationController
 
   ATTRIBUTES = [
     ["Assigned", "assigned_to"],
-    ["Author", "author"],
     ["Category", "category"],
     ["Priority", "priority"],
     ["Status", "status"],
@@ -17,7 +16,6 @@ class GridsController < ApplicationController
 
   PROCS = {
     "assigned_to" => proc {|project| project.members.all },
-    "author" => proc {|project| User.all },
     "category" => proc {|project| IssueCategory.all },
     "priority" => proc {|project| IssuePriority.all },
     "fixed_version" => proc {|project| project.versions },
