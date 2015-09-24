@@ -84,7 +84,7 @@ class GridsController < ApplicationController
       y = issue.send(@vertical) if y.nil?
       #puts("#{@vertical.inspect} #{y.inspect}")
       if not @y_categories.include?(y)
-        y = "Unknown"
+        y = nil
         if not @y_categories.include?(y)
           @y_categories << y
         end
@@ -94,7 +94,7 @@ class GridsController < ApplicationController
       x = issue.send(@horizontal) if x.nil?
       #puts("#{@horizontal.inspect} #{x.inspect}")
       if not @x_categories.include?(x)
-        x = "Unknown"
+        x = nil
         if not @x_categories.include?(x)
           @x_categories << x
         end
