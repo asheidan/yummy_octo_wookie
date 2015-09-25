@@ -104,7 +104,23 @@ class GridsController < ApplicationController
     (PROCS[parameter].call(@project) + [nil]).each do |x|
       categories << if x.nil? then{:id => :none, :name => "None"} else {:id => get_id(x), :name => x.name} end
     end
-    categories
+
+    # Sort the categories by name, and always put the "None" category last.
+    categories.sort do |a,b|
+      if a[:id] != :none and b[:id] == :none then
+        -1
+      elsif a[:id] == :none and b[:id] != :none then
+        1
+      elsif a[:id] == :none and b[:id] == :none then
+        0
+      elsif a[:name] < b[:name] then
+        -1
+      elsif a[:name] > b[:name] then
+        1
+      else
+        0
+      end
+    end
   end
 
   def get_id entity
