@@ -101,7 +101,13 @@ class GridsController < ApplicationController
 
   def create_categories parameter
     categories = []
-    (PROCS[parameter].call(@project) + [nil]).each do |x|
+
+    items = PROCS[parameter].call(@project).to_a
+    unless value_required parameter then
+      items << nil
+    end
+
+    items.each do |x|
       categories << if x.nil? then{:id => :none, :name => "None"} else {:id => get_id(x), :name => x.name} end
     end
 
@@ -132,5 +138,9 @@ class GridsController < ApplicationController
     else
       entity.id
     end
+  end
+
+  def value_required category
+    %w[status priority].include? category
   end
 end
