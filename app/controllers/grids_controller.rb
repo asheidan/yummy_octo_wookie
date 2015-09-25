@@ -111,22 +111,26 @@ class GridsController < ApplicationController
       categories << if x.nil? then{:id => :none, :name => "None"} else {:id => get_id(x), :name => x.name} end
     end
 
-    # Sort the categories by name, and always put the "None" category last.
-    categories.sort do |a,b|
-      if a[:id] != :none and b[:id] == :none then
-        -1
-      elsif a[:id] == :none and b[:id] != :none then
-        1
-      elsif a[:id] == :none and b[:id] == :none then
-        0
-      elsif a[:name] < b[:name] then
-        -1
-      elsif a[:name] > b[:name] then
-        1
-      else
-        0
+    if sort_by_name parameter then
+      # Sort the categories by name, and always put the "None" category last.
+      categories.sort! do |a,b|
+        if a[:id] != :none and b[:id] == :none then
+          -1
+        elsif a[:id] == :none and b[:id] != :none then
+          1
+        elsif a[:id] == :none and b[:id] == :none then
+          0
+        elsif a[:name] < b[:name] then
+          -1
+        elsif a[:name] > b[:name] then
+          1
+        else
+          0
+        end
       end
     end
+
+    categories
   end
 
   def get_id entity
@@ -142,5 +146,9 @@ class GridsController < ApplicationController
 
   def value_required category
     %w[status priority].include? category
+  end
+
+  def sort_by_name category
+    %w[assigned_to fixed_version].include? category
   end
 end
