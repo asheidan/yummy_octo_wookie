@@ -66,14 +66,14 @@
 <table style="width: 100%; table-layout: fixed;" border="1">
   <tr>
 	<th></th>
-	<% @x_categories.each do |x| %>
+	<% @x_items.each do |x| %>
 	<th><%= x[:name] %></th>
 	<% end %>
   </tr>
-  <% @y_categories.each do |y| %>
+  <% @y_items.each do |y| %>
   <tr>
 	<th><%= y[:name] %></th>
-	<% @x_categories.each do |x| %>
+	<% @x_items.each do |x| %>
 	<td style="vertical-align: top;" class="area" id="area-<%= x[:id] %>-<%= y[:id] %>">
 	  <% @data[y[:id]][x[:id]].each do |issue| %>
 	  <div id="issue-<%= issue.id %>" class="hascontextmenu card" style="border: 1px solid #ebeea2; margin: 1px; padding: 5px; background-color: #ffffd5;">

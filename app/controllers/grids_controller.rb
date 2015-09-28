@@ -74,8 +74,8 @@ class GridsController < ApplicationController
       hash[key] = subhash
     end
 
-    @x_categories = create_categories @horizontal
-    @y_categories = create_categories @vertical
+    @x_items = create_items @horizontal
+    @y_items = create_items @vertical
 
     @issues.each do |issue|
       y = issue[@vertical]
@@ -99,21 +99,20 @@ class GridsController < ApplicationController
     @project = Project.find(params[:project_id])
   end
 
-  def create_categories parameter
-    categories = []
+  def create_items name
+    items = []
 
-    items = PROCS[parameter].call(@project).to_a
-    unless value_required parameter then
-      items << nil
+    PROCS[name].call(@project).to_a.each do |x|
+      items << {:id => get_id(x), :name => x.name}
     end
 
-    items.each do |x|
-      categories << if x.nil? then{:id => :none, :name => "None"} else {:id => get_id(x), :name => x.name} end
+    unless is_value_required name then
+      items << {:id => :none, :name => "None"}
     end
 
-    if sort_by_name parameter then
-      # Sort the categories by name, and always put the "None" category last.
-      categories.sort! do |a,b|
+    if should_sort_by_name name then
+      # Sort the items by name, and always put the "None" item last.
+      items.sort! do |a,b|
         if a[:id] != :none and b[:id] == :none then
           -1
         elsif a[:id] == :none and b[:id] != :none then
@@ -130,7 +129,7 @@ class GridsController < ApplicationController
       end
     end
 
-    categories
+    items
   end
 
   def get_id entity
@@ -144,11 +143,11 @@ class GridsController < ApplicationController
     end
   end
 
-  def value_required category
-    %w[status priority].include? category
+  def is_value_required item
+    %w[status priority].include? item
   end
 
-  def sort_by_name category
-    %w[assigned_to fixed_version].include? category
+  def should_sort_by_name item
+    %w[assigned_to fixed_version].include? item
   end
 end
