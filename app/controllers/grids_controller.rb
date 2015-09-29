@@ -40,23 +40,23 @@ class GridsController < ApplicationController
 
     issue = Issue.new
     valid_request = true
-    if not valid_param?(@horizontal)
+    unless valid_param?(@horizontal)
       flash[:error] = "Unknown attribute #{@horizontal.inspect}" unless @horizontal.nil?
       @horizontal = "status"
       valid_request = false
     end
-    if not valid_param?(@vertical)
+    unless valid_param?(@vertical)
       flash[:error] = "Unknown attribute #{@vertical.inspect}" unless @vertical.nil?
       @vertical = "fixed_version"
       valid_request = false
     end
-    if not valid_param?(@sorting)
+    unless valid_param?(@sorting)
       flash[:error] = "Unknown attribute #{@sorting.inspect}" unless @sorting.nil?
       @sorting = "priority"
       valid_request = false
     end
 
-    if not valid_request
+    unless valid_request
       redirect_to :controller => "grids", :action => "index", :project_id => @project, :params => {
                     :horizontal => @horizontal,
                     :vertical => @vertical,
