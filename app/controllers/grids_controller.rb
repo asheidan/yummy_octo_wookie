@@ -78,13 +78,8 @@ class GridsController < ApplicationController
       y = issue.send(@vertical) if y.nil?
       if @horizontal.start_with? "custom_field-"
         # This is a custom field
-        value = nil
         id = @horizontal.sub("custom_field-", "").to_i
-        issue.custom_field_values.each do |custom_field_value|
-          if custom_field_value.custom_field_id == id
-            value = custom_field_value.to_s
-          end
-        end
+        value = get_custom_field_value issue, id
         x = @custom_field_values[id][value] unless value.nil?
       else
         x = issue[@horizontal]
@@ -179,14 +174,19 @@ class GridsController < ApplicationController
     values = {}
     value_id = 1
     @issues.each do |issue|
-      issue.custom_field_values.each do |custom_field_value|
-        if custom_field_value.custom_field_id == id
-          value = custom_field_value.to_s
-          values[value] = value_id unless (value.empty? or values.has_key? value)
-          value_id += 1
-        end
-      end
+      value = get_custom_field_value issue, id
+      values[value] = value_id unless (value.nil? or value.empty? or values.has_key? value)
+      value_id += 1
     end
     values
+  end
+
+  def get_custom_field_value issue, id
+    issue.custom_field_values.each do |custom_field_value|
+      if custom_field_value.custom_field_id == id
+        return custom_field_value.to_s
+      end
+    end
+    nil
   end
 end
