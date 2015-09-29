@@ -73,24 +73,8 @@ class GridsController < ApplicationController
     @y_items = create_items @vertical
 
     @issues.each do |issue|
-      if @vertical.start_with? "custom_field-"
-        # This is a custom field
-        id = @vertical.sub("custom_field-", "").to_i
-        value = get_custom_field_value issue, id
-        y = @custom_field_values[id][value] unless value.nil?
-      else
-        y = issue[@vertical]
-        y = issue.send(@vertical) if y.nil?
-      end
-      if @horizontal.start_with? "custom_field-"
-        # This is a custom field
-        id = @horizontal.sub("custom_field-", "").to_i
-        value = get_custom_field_value issue, id
-        x = @custom_field_values[id][value] unless value.nil?
-      else
-        x = issue[@horizontal]
-        x = issue.send(@horizontal) if x.nil?
-      end
+      y = get_item_entity issue, @vertical
+      x = get_item_entity issue, @horizontal
       @data[get_id y][get_id x].push(issue)
     end
   end
@@ -174,6 +158,19 @@ class GridsController < ApplicationController
       attribute_options << [custom_field[:name], "custom_field-#{custom_field[:id]}"]
     end
     attribute_options
+  end
+
+  def get_item_entity issue, axis_type
+    if axis_type.start_with? "custom_field-"
+      # This is a custom field
+      id = axis_type.sub("custom_field-", "").to_i
+      value = get_custom_field_value issue, id
+      entity = @custom_field_values[id][value] unless value.nil?
+    else
+      # This is a standard field
+      entity = issue[axis_type]
+      entity = issue.send(axis_type) if entity.nil?
+    end
   end
 
   def get_custom_field_values id
