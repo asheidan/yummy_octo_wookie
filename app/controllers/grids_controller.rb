@@ -82,7 +82,7 @@ class GridsController < ApplicationController
   private
 
   def valid_param? name
-    (@procs.has_key? name and Issue.attribute_method? name) or name.start_with? "custom_field-"
+    (@procs.has_key? name and Issue.attribute_method? name) or is_custom_field name
   end
 
   def find_project
@@ -96,9 +96,9 @@ class GridsController < ApplicationController
       @procs[name].call(@project).to_a.each do |x|
         items << {:id => get_id(x), :name => x.name}
       end
-    elsif name.start_with? "custom_field-"
+    elsif is_custom_field name
       # This is a custom field
-      id = name.sub("custom_field-", "").to_i
+      id = get_custom_field_id name
       @custom_field_values[id] = get_custom_field_values id
       @custom_field_values[id].each do |value, value_id|
         items << {:id => value_id, :name => value}
@@ -149,7 +149,7 @@ class GridsController < ApplicationController
   end
 
   def should_sort_by_name item
-    %w[assigned_to fixed_version].include? item or item.start_with? "custom_field-"
+    %w[assigned_to fixed_version].include? item or is_custom_field item
   end
 
   def get_attribute_options
@@ -160,16 +160,16 @@ class GridsController < ApplicationController
     attribute_options
   end
 
-  def get_item_entity issue, axis_type
-    if axis_type.start_with? "custom_field-"
+  def get_item_entity issue, item
+    if is_custom_field item
       # This is a custom field
-      id = axis_type.sub("custom_field-", "").to_i
+      id = get_custom_field_id item
       value = get_custom_field_value issue, id
       entity = @custom_field_values[id][value] unless value.nil?
     else
       # This is a standard field
-      entity = issue[axis_type]
-      entity = issue.send(axis_type) if entity.nil?
+      entity = issue[item]
+      entity = issue.send(item) if entity.nil?
     end
   end
 
@@ -191,5 +191,13 @@ class GridsController < ApplicationController
       end
     end
     nil
+  end
+
+  def is_custom_field name
+    name.start_with? "custom_field-"
+  end
+
+  def get_custom_field_id name
+    name.sub("custom_field-", "").to_i
   end
 end
