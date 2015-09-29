@@ -73,9 +73,15 @@ class GridsController < ApplicationController
     @y_items = create_items @vertical
 
     @issues.each do |issue|
-      # The important point here is to get the ID of x and y
-      y = issue[@vertical]
-      y = issue.send(@vertical) if y.nil?
+      if @vertical.start_with? "custom_field-"
+        # This is a custom field
+        id = @vertical.sub("custom_field-", "").to_i
+        value = get_custom_field_value issue, id
+        y = @custom_field_values[id][value] unless value.nil?
+      else
+        y = issue[@vertical]
+        y = issue.send(@vertical) if y.nil?
+      end
       if @horizontal.start_with? "custom_field-"
         # This is a custom field
         id = @horizontal.sub("custom_field-", "").to_i
