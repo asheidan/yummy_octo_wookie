@@ -165,7 +165,7 @@ class GridsController < ApplicationController
   end
 
   def should_sort_by_name item
-    %w[assigned_to fixed_version].include? item
+    %w[assigned_to fixed_version].include? item or item.start_with? "custom_field-"
   end
 
   def get_attribute_options
