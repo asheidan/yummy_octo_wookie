@@ -128,6 +128,15 @@ $(function () {
 			placeholder: "placeholder",
 			forcePlaceHolderSize: true,
 			receive: function (event, ui) {
+				function create_axis_url_part(axis, axis_id) {
+					if (axis.startsWith("custom_field-")) {
+						var custom_field_id = axis.split("-")[1];
+						var custom_field_value = custom_field_mapping[custom_field_id][axis_id];
+						return "issue%5Bcustom_field_values%5D%5B" + custom_field_id + "%5D=" + custom_field_value;
+					} else {
+						return "issue%5B" + axis + "_id%5D=" + axis_id;
+					}
+				}
 				var custom_field_mapping = {};
 				<% @custom_field_values.each do |k,v| %>
 				custom_field_mapping[<%= k %>] = {};
@@ -140,24 +149,9 @@ $(function () {
 				console.log(event.target);
 				var target_ids = event.target.id.split("-").slice(1, 3);
 				var horizontal_id = target_ids[0];
-				var horizontal_url_part;
-				console.log(horizontal);
-				if (horizontal.startsWith("custom_field-")) {
-					var custom_field_id = horizontal.split("-")[1];
-					var custom_field_value = custom_field_mapping[custom_field_id][horizontal_id];
-					horizontal_url_part = "issue%5Bcustom_field_values%5D%5B" + custom_field_id + "%5D=" + custom_field_value;
-				} else {
-					horizontal_url_part = "issue%5B" + horizontal + "_id%5D=" + horizontal_id;
-				}
+				var horizontal_url_part = create_axis_url_part(horizontal, horizontal_id);
 				var vertical_id = target_ids[1];
-				var vertical_url_part;
-				if (vertical.startsWith("custom_field-")) {
-					var custom_field_id = vertical.split("-")[1];
-					var custom_field_value = custom_field_mapping[custom_field_id][vertical_id];
-					vertical_url_part = "issue%5Bcustom_field_values%5D%5B" + custom_field_id + "%5D=" + custom_field_value;
-				} else {
-					vertical_url_part = "issue%5B" + vertical + "_id%5D=" + vertical_id;
-				}
+				var vertical_url_part = create_axis_url_part(vertical, vertical_id);
 				var issue_id = ui.item[0].id.split("-")[1];
 				var url = "<%= escape_javascript url_for(:controller => 'issues', :action => 'bulk_update') %>?ids%5B%5D=" + issue_id + "&" + horizontal_url_part + "&" + vertical_url_part;
 				console.log(url)
