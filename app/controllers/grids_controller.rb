@@ -194,7 +194,7 @@ class GridsController < ApplicationController
   end
 
   def is_custom_field name
-    name.start_with? "custom_field-"
+    name and name.start_with? "custom_field-"
   end
 
   def get_custom_field_id name
