@@ -132,6 +132,9 @@ $(function () {
 					if (axis.startsWith("custom_field-")) {
 						var custom_field_id = axis.split("-")[1];
 						var custom_field_value = custom_field_mapping[custom_field_id][axis_id];
+						if (custom_field_value == null) {
+							custom_field_value = "__none__";
+						}
 						return "issue%5Bcustom_field_values%5D%5B" + custom_field_id + "%5D=" + custom_field_value;
 					} else {
 						return "issue%5B" + axis + "_id%5D=" + axis_id;
